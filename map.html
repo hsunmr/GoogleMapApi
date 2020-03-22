@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=yourKEY"></script>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 600px;
+        width:600px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 20px;
+      }
+      #btn{
+        padding:30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="btn">
+      <button onclick="switchMarkers()">switch</button>
+    </div>
+    
+ 
+  </body>
+  <script>
+    var map;
+    $(function(){
+      var location = [
+        {
+          lat: '25.0416412',
+          lng: '121.5284858',
+          name: '華山公園'
+        },
+        {
+          lat: '25.0430612',
+          lng: '121.5597497',
+          name: '松山文創園區2號倉庫'
+        },
+        {
+          lat: '25.136705',
+          lng: '121.505709',
+          name: '新北投公園'
+        },
+        {
+          lat: '24.4010777',
+          lng: '120.9550342',
+          name: '雪霸國家公園'
+        }
+      ];
+      refreshMap(location);
+    });
+    function refreshMap(location) {
+      map = new google.maps.Map(document.getElementById('map'), {   //ceate map
+        center: {lat: 25.105497 , lng: 121.597366},
+        zoom: 8,
+      });
+      var bounds = new google.maps.LatLngBounds();                  //map bounds
+      //set markers
+      for (var i = 0; i<location.length;i++){                      
+        var position = new google.maps.LatLng(parseFloat(location[i].lat),parseFloat(location[i].lng));
+        var marker = new google.maps.Marker({
+          position: position, 
+          map: map,
+          label:(i+1).toString(),
+          title:location[i].name
+        });
+        bounds.extend(position);   
+        //attach infowindow
+        attachInfo(marker,location[i].name);
+      }
+      //fit bounds
+      map.fitBounds(bounds);
+  }
+  //switch map
+  function switchMarkers(){
+    var location = [
+      {
+        lat: '24.4307638',
+        lng: '118.3262926',
+        name: '金門牛家莊'
+      },
+      {
+        lat: '24.4337115',
+        lng: '118.3191716',
+        name: '金門航空站'
+      },
+      {
+        lat: '24.4093284',
+        lng: '118.2989353',
+        name: '得月樓'
+      },
+      {
+        lat: '24.4010777',
+        lng: '120.9550342',
+        name: '雪霸國家公園'
+      }
+    ];
+    refreshMap(location);
+  }
+  function attachInfo(marker,content) {
+    var infowindow = new google.maps.InfoWindow({
+      content: content
+    });
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
+  </script>
+</html>
